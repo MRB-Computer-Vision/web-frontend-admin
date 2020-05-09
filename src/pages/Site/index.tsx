@@ -1,8 +1,10 @@
 import React from 'react';
 
+import { Title } from './styles';
+
 // tipando componente no formato de funcao
 const Site: React.FC = () => {
-  return <h1>Site</h1>;
+  return <Title>Site</Title>;
 };
 
 export default Site;
