@@ -7,7 +7,8 @@ export const Logo = styled.img`
   width: 30px;
 `;
 
-export const Title = styled.h1`
+export const Title = styled.span`
+  margin-left: 5px;
   font-size: 48px;
   color: #3a3a3a;
   max-width: 450px;
