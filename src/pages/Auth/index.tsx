@@ -20,7 +20,7 @@ const Auth: React.FC = () => {
     } else {
       const params = { email, password };
       try {
-        const response = await api.post('sessions', params);
+        const response = await api.post('login', params);
         console.log('response', response.data);
       } catch (err) {
         setInputError('Falha na Autenticação');
