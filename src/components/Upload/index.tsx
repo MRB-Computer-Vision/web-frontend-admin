@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
+import { sign } from './AWSUtil';
 
 import {
   App,
@@ -35,19 +36,18 @@ const Upload: React.FC = (): JSX.Element => {
       return;
     }
 
-    setUploading(true);
-    setUploadMessage('Enviando');
-    const formData = new FormData();
-    formData.append('file', file);
-    const url = 'http://localhost:3333/uploads';
-
     try {
-      const response = await axios.post(url, formData, {
+      const signedUrl = await sign(file.name, file.type);
+
+      const options = {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': file.type,
         },
-      });
-      setData(response.data);
+      };
+
+      const result = axios.put(signedUrl, file, options);
+      console.log(result);
+      setData('Arquivo no S3');
       setUploading(false);
       setUploadMessage('Upload realizado com sucesso');
     } catch (err) {
@@ -79,7 +79,7 @@ const Upload: React.FC = (): JSX.Element => {
           </UploadButton>
         </Form>
         {uploadMessage ? <Message>{uploadMessage}</Message> : <span />}
-        {data ? <Result>data</Result> : <span />}
+        {data ? <Result>{data}</Result> : <span />}
       </App>
     </>
   );
