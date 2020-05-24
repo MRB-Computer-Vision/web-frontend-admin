@@ -35,7 +35,7 @@ const Upload: React.FC = (): JSX.Element => {
         'Content-Type': 'application/json',
       },
     };
-    const url = `${process.env.REACT_APP_BASE_URL || ''}/exams`;
+    const url = `${process.env.REACT_APP_BASE_URL || ''}/exams/`;
     const uploadResult = await axios.post(url, dataSubmitExame, options);
     return uploadResult;
   }
@@ -64,17 +64,11 @@ const Upload: React.FC = (): JSX.Element => {
           type: file.name,
           exam_files: files,
         };
-        console.log('Data Submit', dataSubmit);
         const result = await submitExame(dataSubmit);
-        /*
-        const result = {
-          data: { exam: 'datas', message: 'Upload ralizado com sucesso' },
-        };
-        */
-        console.log('submitExame result', result);
         setData(result.data.exam);
         setUploadMessage(result.data.message);
         setUploading(false);
+        setFile(undefined);
       } else {
         setData(null);
         setUploadMessage(dataS3.statusText);

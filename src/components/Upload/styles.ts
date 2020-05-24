@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
 export const Result = styled.h3``;
-export const Message = styled.div`
-  font-weight: bold;
-`;
-
 export const UploadFile = styled.div``;
 export const ImagePreviewBox = styled.div``;
 export const Form = styled.form``;
