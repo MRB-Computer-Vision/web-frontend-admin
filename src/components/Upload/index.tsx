@@ -1,16 +1,16 @@
 import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
-import { sign } from './AWSUtil';
+import { sign } from '../../util/AWSUtil';
+import Message from '../Message';
 
 import {
-  App,
+  UploadFile,
   ImagePreviewBox,
   Form,
   FileChooserButton,
   FileInput,
   UploadButton,
   Result,
-  Message,
 } from './styles';
 
 // tipando componente no formato de funcao
@@ -18,13 +18,27 @@ const Upload: React.FC = (): JSX.Element => {
   const acceptedTypes: string[] = ['image/png', 'image/jpg', 'image/jpeg'];
 
   const [file, setFile] = useState();
-  const [uploadMessage, setUploadMessage] = useState('');
   const [data, setData] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  const [uploadMessage, setUploadMessage] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
+  const [erroUpload, setErroUpload] = useState(false);
 
   const isValidFileType = (fileType: string): boolean => {
     return acceptedTypes.includes(fileType);
   };
+
+  async function submitExame(dataSubmitExame: any): Promise<any> {
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const url = `${process.env.REACT_APP_BASE_URL || ''}/exams`;
+    const uploadResult = await axios.post(url, dataSubmitExame, options);
+    return uploadResult;
+  }
 
   async function handleFileUpload(
     event: FormEvent<HTMLFormElement>,
@@ -38,28 +52,48 @@ const Upload: React.FC = (): JSX.Element => {
 
     try {
       const signedUrl = await sign(file.name, file.type);
-
       const options = {
         headers: {
           'Content-Type': file.type,
         },
       };
-
-      const result = axios.put(signedUrl, file, options);
-      console.log(result);
-      setData('Arquivo no S3');
-      setUploading(false);
-      setUploadMessage('Upload realizado com sucesso');
+      const dataS3 = await axios.put(signedUrl, file, options);
+      if (dataS3.status === 200) {
+        const files = [{ file_path: dataS3.config.url }];
+        const dataSubmit = {
+          type: file.name,
+          exam_files: files,
+        };
+        console.log('Data Submit', dataSubmit);
+        const result = await submitExame(dataSubmit);
+        /*
+        const result = {
+          data: { exam: 'datas', message: 'Upload ralizado com sucesso' },
+        };
+        */
+        console.log('submitExame result', result);
+        setData(result.data.exam);
+        setUploadMessage(result.data.message);
+        setUploading(false);
+      } else {
+        setData(null);
+        setUploadMessage(dataS3.statusText);
+      }
+      setErroUpload(false);
     } catch (err) {
       setUploading(false);
-      setUploadMessage(`Ocorreu um erro: ${err}`);
+      setErroUpload(true);
+      setUploadMessage(`${err}`);
     }
+    setUploading(false);
+    setShowMessage(true);
   }
 
   return (
     <>
-      <App>
+      <UploadFile>
         <ImagePreviewBox />
+        <Message show={showMessage} message={uploadMessage} erro={erroUpload} />
         <Form onSubmit={handleFileUpload}>
           <FileChooserButton type="button">
             Choose File
@@ -78,9 +112,8 @@ const Upload: React.FC = (): JSX.Element => {
             Upload
           </UploadButton>
         </Form>
-        {uploadMessage ? <Message>{uploadMessage}</Message> : <span />}
         {data ? <Result>{data}</Result> : <span />}
-      </App>
+      </UploadFile>
     </>
   );
 };

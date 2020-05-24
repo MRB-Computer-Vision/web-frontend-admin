@@ -5,7 +5,7 @@ export const Message = styled.div`
   font-weight: bold;
 `;
 
-export const App = styled.div``;
+export const UploadFile = styled.div``;
 export const ImagePreviewBox = styled.div``;
 export const Form = styled.form``;
 export const FileChooserButton = styled.button``;
