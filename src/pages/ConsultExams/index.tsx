@@ -9,6 +9,8 @@ interface Exam {
   id: string;
   status: string;
   type: string;
+  result: string;
+  created_at: Date;
 }
 
 // tipando componente no formato de funcao
@@ -50,8 +52,9 @@ const ConsultExams: React.FC = () => {
           <tr>
             <th>Code</th>
             <th>Archive</th>
+            <th>Date</th>
             <th>Status</th>
-            <th>Status</th>
+            <th>Result</th>
           </tr>
         </thead>
         <tbody>
@@ -59,7 +62,9 @@ const ConsultExams: React.FC = () => {
             <tr key={exam.id}>
               <td>{exam.id}</td>
               <td>{exam.type}</td>
+              <td>{exam.created_at}</td>
               <td>{exam.status}</td>
+              <td>{exam.result}</td>
             </tr>
           ))}
 
