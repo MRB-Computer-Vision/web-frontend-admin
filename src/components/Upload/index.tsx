@@ -103,7 +103,7 @@ const Upload: React.FC = (): JSX.Element => {
             />
           </FileChooserButton>
           <UploadButton type="submit" disabled={uploading}>
-            Upload
+            Send File
           </UploadButton>
         </Form>
         {data ? <Result>{data}</Result> : <span />}

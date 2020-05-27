@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
-import { Title, DataTable } from './styles';
+import { Title, DataTable, StyledLink } from './styles';
 
 import Message from '../../components/Message';
 
@@ -40,13 +40,17 @@ const ConsultExams: React.FC = () => {
 
   return (
     <>
-      <Title>Resultados</Title>
+      <Title>Consult Exams</Title>
+      <StyledLink to="/">Home</StyledLink>
+      &nbsp;
+      <StyledLink to="/submit">Submit Exam</StyledLink>
       <Message show={showMessage} erro={erro} message={message} />
       <DataTable>
         <thead>
           <tr>
-            <th>Código</th>
-            <th>Arquivo</th>
+            <th>Code</th>
+            <th>Archive</th>
+            <th>Status</th>
             <th>Status</th>
           </tr>
         </thead>
