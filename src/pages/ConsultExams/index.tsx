@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
-import { Title, DataTable } from './styles';
+import { Title, DataTable, StyledLink } from './styles';
 
 import Message from '../../components/Message';
 
@@ -9,6 +9,8 @@ interface Exam {
   id: string;
   status: string;
   type: string;
+  result: string;
+  created_at: Date;
 }
 
 // tipando componente no formato de funcao
@@ -40,14 +42,19 @@ const ConsultExams: React.FC = () => {
 
   return (
     <>
-      <Title>Resultados</Title>
+      <Title>Consult Exams</Title>
+      <StyledLink to="/">Home</StyledLink>
+      &nbsp;
+      <StyledLink to="/submit">Submit Exam</StyledLink>
       <Message show={showMessage} erro={erro} message={message} />
       <DataTable>
         <thead>
           <tr>
-            <th>Código</th>
-            <th>Arquivo</th>
+            <th>Code</th>
+            <th>Archive</th>
+            <th>Date</th>
             <th>Status</th>
+            <th>Result</th>
           </tr>
         </thead>
         <tbody>
@@ -55,7 +62,9 @@ const ConsultExams: React.FC = () => {
             <tr key={exam.id}>
               <td>{exam.id}</td>
               <td>{exam.type}</td>
+              <td>{exam.created_at}</td>
               <td>{exam.status}</td>
+              <td>{exam.result}</td>
             </tr>
           ))}
 

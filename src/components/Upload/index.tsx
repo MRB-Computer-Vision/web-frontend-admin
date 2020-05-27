@@ -59,7 +59,7 @@ const Upload: React.FC = (): JSX.Element => {
       };
       const dataS3 = await axios.put(signedUrl, file, options);
       if (dataS3.status === 200) {
-        const files = [{ file_path: dataS3.config.url }];
+        const files = [{ file_path: file.name }];
         const dataSubmit = {
           type: file.name,
           exam_files: files,
@@ -103,7 +103,7 @@ const Upload: React.FC = (): JSX.Element => {
             />
           </FileChooserButton>
           <UploadButton type="submit" disabled={uploading}>
-            Upload
+            Send File
           </UploadButton>
         </Form>
         {data ? <Result>{data}</Result> : <span />}

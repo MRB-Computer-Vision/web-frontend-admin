@@ -1,16 +1,19 @@
 import React from 'react';
 import Upload from '../../components/Upload';
 
-import { Title } from './styles';
+import { Title, StyledLink } from './styles';
 
 // tipando componente no formato de funcao
-const Dashboard: React.FC = () => {
+const SubmitExams: React.FC = () => {
   return (
     <>
-      <Title>Exames</Title>
+      <Title>Submit Exam</Title>
+      <StyledLink to="/">Home</StyledLink>
+      &nbsp;
+      <StyledLink to="/consult">Consult Exams</StyledLink>
       <Upload />
     </>
   );
 };
 
-export default Dashboard;
+export default SubmitExams;
