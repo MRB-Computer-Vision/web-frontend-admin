@@ -6,7 +6,8 @@ const ClinicalEvaluation: React.FC = () => {
   return (
     <>
       <AppBar />
-      Avaliação Clinica
+      <h3>Avaliação Clínica</h3>
+      <br />
     </>
   );
 };
