@@ -5,9 +5,10 @@ import AppBar from '../../components/AppBar';
 const RaioX: React.FC = () => {
   return (
     <>
-      <AppBar />
-      <h3>Raio-X</h3>
+      <AppBar titlePage="Raio-X" />
       <br />
+      <br />
+      <h3>Raio-X</h3>
     </>
   );
 };

@@ -14,14 +14,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-// tipando componente no formato de funcao
 const Dashboard: React.FC = () => {
   const classes = useStyles();
   return (
     <>
-      <AppBar />
-      <h3>Dashboard</h3>
+      <AppBar titlePage="Dashboard" />
       <br />
+      <br />
+      <h3>Dashboard</h3>
       <div className={classes.root}>
         <Grid container className={classes.root} spacing={2}>
           <Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
