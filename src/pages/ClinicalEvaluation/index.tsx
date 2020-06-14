@@ -6,8 +6,9 @@ import AppBar from '../../components/AppBar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    content: {
       flexGrow: 1,
+      padding: theme.spacing(5),
     },
   }),
 );
@@ -17,10 +18,10 @@ const ClinicalEvaluation: React.FC = () => {
   return (
     <>
       <AppBar titlePage="Avaliação Clínica" />
-      <br />
-      <br />
-      <h3>Avaliação Clínica</h3>
-      <div className={classes.root}>Conteúdo</div>
+      <div className={classes.content}>
+        <h3>Avaliação Clínica</h3>
+        pagina de Avaliação Clínica
+      </div>
     </>
   );
 };

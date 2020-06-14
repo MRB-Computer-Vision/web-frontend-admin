@@ -10,6 +10,10 @@ import { Link } from 'react-router-dom';
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
+    minHeight: 142,
+  },
+  link: {
+    minHeight: 142,
   },
 });
 

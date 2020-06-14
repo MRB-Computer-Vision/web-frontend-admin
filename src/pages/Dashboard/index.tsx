@@ -8,8 +8,9 @@ import Launcher from '../../components/Launcher';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    content: {
       flexGrow: 1,
+      padding: theme.spacing(5),
     },
   }),
 );
@@ -19,11 +20,9 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <AppBar titlePage="Dashboard" />
-      <br />
-      <br />
-      <h3>Dashboard</h3>
-      <div className={classes.root}>
-        <Grid container className={classes.root} spacing={2}>
+      <div className={classes.content}>
+        <h3>Dashboard</h3>
+        <Grid container spacing={1}>
           <Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
             <Launcher
               to="/ClinicalEvaluation"
