@@ -13,6 +13,7 @@ export const Title = styled.h1`
 export const StyledLink = styled(styled(Link)``)`
   text-decoration: none;
   padding: 10px;
+  padding-bottom: 10px;
   width: 410px;
   height: 70px;
   background: #3366ff;

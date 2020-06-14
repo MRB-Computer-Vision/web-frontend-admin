@@ -7,9 +7,14 @@ import Auth from '../pages/Auth';
 import SubmitExams from '../pages/SubmitExams';
 import ConsultExams from '../pages/ConsultExams';
 
+import ClinicalEvaluation from '../pages/ClinicalEvaluation';
+import RaioX from '../pages/RaioX';
+
 const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={Dashboard} />
+    <Route path="/ClinicalEvaluation" exact component={ClinicalEvaluation} />
+    <Route path="/RaioX" exact component={RaioX} />
     <Route path="/submit" exact component={SubmitExams} />
     <Route path="/site" component={Site} />
     <Route path="/dashboard" component={Dashboard} />
