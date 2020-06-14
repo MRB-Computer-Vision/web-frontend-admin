@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(5),
     },
-    root: {
+    tabs: {
       flexGrow: 1,
       backgroundColor: theme.palette.background.paper,
     },
@@ -64,15 +64,20 @@ const RaioX: React.FC = () => {
     <>
       <AppBar titlePage="Raio-X" />
       <div className={classes.content}>
-        <div className={classes.root}>
+        <div className={classes.tabs}>
           <Tabs
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
           >
-            <Tab label="Item One" {...a11yProps(0)} />
-            <Tab label="Item Two" {...a11yProps(1)} />
-            <Tab label="Item Three" {...a11yProps(2)} />
+            <Tab label="Ficha de Anamnese" {...a11yProps(0)} />
+            <Tab label="Exames auxiliares" {...a11yProps(1)} />
+            <Tab label="Ultrassonagrafias" {...a11yProps(2)} />
+            <Tab label="Radiografias" {...a11yProps(3)} />
+            <Tab label="Tomografias" {...a11yProps(4)} />
+            <Tab label="Parecer final" {...a11yProps(5)} />
+            <Tab label="Acompanhamento" {...a11yProps(6)} />
+            <Tab label="Desfecho" {...a11yProps(7)} />
           </Tabs>
           <TabPanel value={value} index={0}>
             <h3>Raio-X</h3>
@@ -82,6 +87,21 @@ const RaioX: React.FC = () => {
             Item Two
           </TabPanel>
           <TabPanel value={value} index={2}>
+            Item Three
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            Item Three
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            Item Three
+          </TabPanel>
+          <TabPanel value={value} index={5}>
+            Item Three
+          </TabPanel>
+          <TabPanel value={value} index={6}>
+            Item Three
+          </TabPanel>
+          <TabPanel value={value} index={7}>
             Item Three
           </TabPanel>
         </div>
