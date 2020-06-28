@@ -22,7 +22,6 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "heroku-postbuild": "npm install",
     "start": "react-scripts start",
     "production": "PORT=3000 BROWSER=none react-scripts start",
     "build": "react-scripts build",
