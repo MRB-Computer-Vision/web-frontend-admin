@@ -23,8 +23,7 @@
   },
   "scripts": {
     "heroku-postbuild": "npm install",
-    "start": "node server.js",
-    "start-local": "BROWSER=none && react-scripts start",
+    "start": "react-scripts start",
     "production": "PORT=3000 BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
