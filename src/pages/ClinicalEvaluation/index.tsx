@@ -2,7 +2,7 @@ import React from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import AppBar from '../../components/AppBar';
+import View from '../../components/View';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,13 +16,12 @@ const useStyles = makeStyles((theme: Theme) =>
 const ClinicalEvaluation: React.FC = () => {
   const classes = useStyles();
   return (
-    <>
-      <AppBar titlePage="Avaliação Clínica" />
+    <View titlePage="Avaliação Clínica">
       <div className={classes.content}>
         <h3>Avaliação Clínica</h3>
         pagina de Avaliação Clínica
       </div>
-    </>
+    </View>
   );
 };
 

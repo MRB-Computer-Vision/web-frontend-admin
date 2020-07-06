@@ -1,26 +1,23 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
 
-import Dashboard from '../pages/Dashboard';
-import Site from '../pages/Site';
-import Auth from '../pages/Auth';
-import SubmitExams from '../pages/SubmitExams';
-import ConsultExams from '../pages/ConsultExams';
+import { useAuth } from '../context/AuthContext';
 
-import ClinicalEvaluation from '../pages/ClinicalEvaluation';
-import RaioX from '../pages/RaioX';
+import AppRoutes from './App.routes';
+import AuthRoutes from './Auth.routes';
 
-const Routes: React.FC = () => (
-  <Switch>
-    <Route path="/" exact component={Dashboard} />
-    <Route path="/ClinicalEvaluation" exact component={ClinicalEvaluation} />
-    <Route path="/RaioX" exact component={RaioX} />
-    <Route path="/submit" exact component={SubmitExams} />
-    <Route path="/site" component={Site} />
-    <Route path="/dashboard" component={Dashboard} />
-    <Route path="/auth" component={Auth} />
-    <Route path="/consult" component={ConsultExams} />
-  </Switch>
-);
+const Routes: React.FC = () => {
+  const { signed, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ width: 200, height: 200, color: '#666' }}>Aguarde</div>
+      </div>
+    );
+  }
+
+  // se o usuario nao estiver logado somente a rota de login estara dispinivel
+  return signed ? <AppRoutes /> : <AuthRoutes />;
+};
 
 export default Routes;

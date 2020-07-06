@@ -38,6 +38,9 @@ import ConfiguracoesIcon from '@material-ui/icons/Settings';
 import PainelAnaliticoIcon from '@material-ui/icons/Poll';
 import SairIcon from '@material-ui/icons/ExitToApp';
 
+// contexto
+import { useAuth } from '../../context/AuthContext';
+
 interface AppBarProps {
   titlePage: string;
 }
@@ -111,23 +114,28 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openUserMenu = Boolean(anchorEl);
 
-  const handleDrawerOpen = () => {
+  const { signOut, signed, user } = useAuth();
+
+  function handleSignOut(): void {
+    signOut();
+  }
+
+  const handleDrawerOpen = (): void => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
+  const handleDrawerClose = (): void => {
     setOpen(false);
   };
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenu = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setAnchorEl(null);
   };
 
@@ -153,7 +161,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
           <Typography variant="h6" className={classes.title}>
             {open ? titlePage : 'COVID-VISION'}
           </Typography>
-          {auth && (
+          {signed && (
             <Box boxShadow={1}>
               <IconButton
                 aria-label="account of current user"
@@ -163,7 +171,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
                 color="inherit"
               >
                 <AccountCircle />
-                &nbsp; João Dantas
+                {user?.name}
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -181,7 +189,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Meus Dados</MenuItem>
-                <MenuItem onClick={handleClose}>Sair</MenuItem>
+                <MenuItem onClick={handleSignOut}>Sair</MenuItem>
               </Menu>
             </Box>
           )}
@@ -208,7 +216,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
         </div>
         <Divider />
         <List>
-          <ListItem button key="dashboard" component={Link} to="/">
+          <ListItem button key="dashboard" component={Link} to="/dashboard">
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
@@ -218,7 +226,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
             button
             key="clinicalEvaluation"
             component={Link}
-            to="/ClinicalEvaluation"
+            to="/clinical-evaluation"
           >
             <ListItemIcon>
               <ClinicalEvaluationIcon />
@@ -226,7 +234,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
             <ListItemText primary="Avaliação Clínica" />
           </ListItem>
           <Divider />
-          <ListItem button key="raiox" component={Link} to="/RaioX">
+          <ListItem button key="raiox" component={Link} to="/raio-x">
             <ListItemIcon>
               <RaioxIcon />
             </ListItemIcon>
@@ -272,7 +280,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
         </List>
         <Divider />
         <List>
-          <ListItem button key="sair" component={Link} to="/auth">
+          <ListItem button key="sair" onClick={handleSignOut}>
             <ListItemIcon>
               <SairIcon />
             </ListItemIcon>
