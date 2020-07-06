@@ -1,5 +1,7 @@
 import React from 'react';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import { useAuth } from '../context/AuthContext';
 
 import AppRoutes from './App.routes';
@@ -11,7 +13,7 @@ const Routes: React.FC = () => {
   if (loading) {
     return (
       <div style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ width: 200, height: 200, color: '#666' }}>Aguarde</div>
+        <CircularProgress />
       </div>
     );
   }

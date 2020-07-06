@@ -13,7 +13,6 @@ interface User {
 
 interface AuthContextData {
   signed: boolean;
-  messageResponse: string;
   user: User | null;
   loading: boolean;
   signIn(params: any): Promise<any>;
@@ -24,46 +23,43 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [messageResponse, setMessageResponse] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   // carregando dados locais
   useEffect(() => {
     async function loadStorageData(): Promise<void> {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
       // recuperando osd dados do storage
-      const tokenLocal = await localStorage.getItem('@mrb:token');
-      const userLocal = await localStorage.getItem('@mrb:user');
+      const storagedUser = localStorage.getItem('@mrb:user');
+      const storagedToken = localStorage.getItem('@mrb:token');
+      console.log('useEffect: ', storagedUser);
       // se existir os dados sao setados no estado
-      if (userLocal && tokenLocal) {
-        setUser(JSON.parse(userLocal));
-        setLoading(false);
-        api.defaults.headers.Authorization = `Baerer ${tokenLocal}`;
+      if (storagedUser && storagedToken) {
+        setUser(JSON.parse(storagedUser));
+        api.defaults.headers.Authorization = `Baerer ${storagedToken}`;
       }
+      setLoading(false);
     }
     // chama a funcao assincrona
     loadStorageData();
   });
 
-  function signOut(): void {
-    setUser(null);
-    localStorage.removeItem('@mrb:token');
-    localStorage.removeItem('@mrb:user');
-  }
-
   async function signIn(params: any): Promise<any> {
     const response = await auth.signIn(params);
     // recuperando dados da resposta
-    const { message, Authorization, success } = response.data;
-    if (Authorization && success) {
-      const decodedJwt = jsonWebTokenService.decode(Authorization);
-      setUser({ id: decodedJwt?.sub, name: 'Sam' });
-      localStorage.setItem('@mrb:token', Authorization);
-      localStorage.setItem('@mrb:user', JSON.stringify(user));
-      api.defaults.headers.Authorization = `Baerer ${Authorization}`;
-    }
-    setMessageResponse(message);
+    const { Authorization } = response.data;
+    const decodedJwt = jsonWebTokenService.decode(Authorization);
+    const userAuth = { id: decodedJwt?.sub, name: 'Sam' };
+    setUser(userAuth);
+    api.defaults.headers.Authorization = `Baerer ${Authorization}`;
+    localStorage.setItem('@mrb:user', JSON.stringify(userAuth));
+    localStorage.setItem('@mrb:token', Authorization);
     return response;
+  }
+
+  async function signOut(): Promise<void> {
+    await localStorage.clear();
+    setUser(null);
   }
 
   return (
@@ -74,7 +70,6 @@ const AuthProvider: React.FC = ({ children }) => {
         loading,
         signIn,
         signOut,
-        messageResponse,
       }}
     >
       {children}
