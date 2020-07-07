@@ -1,25 +1,33 @@
 import React from 'react';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Switch } from 'react-router-dom';
 
-import { useAuth } from '../context/AuthContext';
+import Route from '../containers/RouteContainer';
 
-import AppRoutes from './App.routes';
-import AuthRoutes from './Auth.routes';
+import Dashboard from '../pages/Dashboard';
+import Site from '../pages/Site';
+import SubmitExams from '../pages/SubmitExams';
+import ConsultExams from '../pages/ConsultExams';
 
-const Routes: React.FC = () => {
-  const { signed, loading } = useAuth();
+import ClinicalEvaluation from '../pages/ClinicalEvaluation';
+import RaioX from '../pages/RaioX';
+import SignIn from '../pages/SignIn';
 
-  if (loading) {
-    return (
-      <div style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
-  // se o usuario nao estiver logado somente a rota de login estara dispinivel
-  return signed ? <AppRoutes /> : <AuthRoutes />;
-};
+const Routes: React.FC = () => (
+  <Switch>
+    <Route path="/site" component={Site} />
+    <Route path="/signin" component={SignIn} />
+    <Route isProtected exact path="/" component={Dashboard} />
+    <Route
+      isProtected
+      path="/clinical-evaluation"
+      component={ClinicalEvaluation}
+    />
+    <Route isProtected path="/raio-x" component={RaioX} />
+    <Route isProtected path="/submit" component={SubmitExams} />
+    <Route isProtected path="/dashboard" component={Dashboard} />
+    <Route isProtected path="/consult" component={ConsultExams} />
+  </Switch>
+);
 
 export default Routes;

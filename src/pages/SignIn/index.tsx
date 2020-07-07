@@ -1,4 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, FormEvent } from 'react';
+import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,7 +17,7 @@ import Container from '@material-ui/core/Container';
 import { Snackbar, SnackbarOrigin } from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
-import { useAuth } from '../../context/AuthContext';
+import { useAuthContext, types } from '../../contexts/Auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,8 +49,11 @@ export interface State extends SnackbarOrigin {
 
 const SigIn: React.FC = () => {
   const classes = useStyles();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [values, setValues] = useState<types.SignInProps>({
+    email: '',
+    password: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState('');
   const [severitySuccess, setSeveritySuccess] = useState(true);
   const [state, setState] = React.useState<State>({
@@ -58,34 +63,26 @@ const SigIn: React.FC = () => {
   });
   const { vertical, horizontal, open } = state;
 
-  const { signIn } = useAuth();
+  const { signIn, isAuthenticated, isAuthenticating } = useAuthContext();
+
+  const onChangeValue = (field: string) => ({ target }: any) => {
+    setValues({
+      ...values,
+      [field]: target.value,
+    });
+  };
 
   async function handleAuth(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     // error, warning, info, success
-    if (!email || !password) {
+    if (!values.email || !values.password) {
       setMessage('Email and Password requireds');
       setSeveritySuccess(false);
-    } else {
-      const params = { email, password };
-      try {
-        const response = await signIn(params);
-        setMessage(response.message);
-        setSeveritySuccess(true);
-      } catch (err) {
-        console.log('erro', err);
-        setMessage('Falha na autenticacao');
-        setSeveritySuccess(false);
-      } finally {
-        setState({ open: true, vertical: 'top', horizontal: 'center' });
-      }
     }
+    signIn(values);
+    setSubmitted(true);
   }
-  /*
-  function handleClick(newState: SnackbarOrigin): void {
-    setState({ open: true, ...newState });
-  }
-  */
+
   const handleClose = (): void => {
     setState({ ...state, open: false });
   };
@@ -103,6 +100,18 @@ const SigIn: React.FC = () => {
       </>
     );
   }
+
+  const history = useHistory();
+
+  React.useEffect(() => {
+    if (submitted && !isAuthenticating && isAuthenticated) {
+      history.push('/');
+    }
+  }, [isAuthenticated, history, isAuthenticating, submitted]);
+
+  React.useEffect(() => {
+    return () => setSubmitted(false);
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -125,8 +134,8 @@ const SigIn: React.FC = () => {
             name="email"
             autoComplete="email"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={onChangeValue('email')}
           />
           <TextField
             variant="outlined"
@@ -138,8 +147,8 @@ const SigIn: React.FC = () => {
             type="password"
             id="password"
             autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={values.password}
+            onChange={onChangeValue('password')}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

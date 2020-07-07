@@ -39,7 +39,7 @@ import PainelAnaliticoIcon from '@material-ui/icons/Poll';
 import SairIcon from '@material-ui/icons/ExitToApp';
 
 // contexto
-import { useAuth } from '../../context/AuthContext';
+import { useAuthContext } from '../../contexts/Auth';
 
 interface AppBarProps {
   titlePage: string;
@@ -117,7 +117,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openUserMenu = Boolean(anchorEl);
 
-  const { signOut, signed, user } = useAuth();
+  const { signOut, isAuthenticated, isAuthenticating, user } = useAuthContext();
 
   function handleSignOut(): void {
     signOut();
@@ -161,7 +161,7 @@ const AppBAr: React.FC<AppBarProps> = ({ titlePage }: AppBarProps) => {
           <Typography variant="h6" className={classes.title}>
             {open ? titlePage : 'COVID-VISION'}
           </Typography>
-          {signed && (
+          {isAuthenticated && (
             <Box boxShadow={1}>
               <IconButton
                 aria-label="account of current user"
