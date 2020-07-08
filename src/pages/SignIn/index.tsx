@@ -53,7 +53,6 @@ const SigIn: React.FC = () => {
     email: '',
     password: '',
   });
-  const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState('');
   const [severitySuccess, setSeveritySuccess] = useState(true);
   const [state, setState] = React.useState<State>({
@@ -72,16 +71,13 @@ const SigIn: React.FC = () => {
     });
   };
 
-  async function handleAuth(event: FormEvent<HTMLFormElement>): Promise<void> {
+  const submitted = React.useRef(false);
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    // error, warning, info, success
-    if (!values.email || !values.password) {
-      setMessage('Email and Password requireds');
-      setSeveritySuccess(false);
-    }
     signIn(values);
-    setSubmitted(true);
-  }
+    submitted.current = true;
+  };
 
   const handleClose = (): void => {
     setState({ ...state, open: false });
@@ -102,16 +98,18 @@ const SigIn: React.FC = () => {
   }
 
   const history = useHistory();
-
   React.useEffect(() => {
-    if (submitted && !isAuthenticating && isAuthenticated) {
+    console.log('isAuthenticated', isAuthenticated);
+    console.log('isAuthenticating', isAuthenticating);
+    console.log('submitted', submitted.current);
+    if (isAuthenticated) {
+      console.log('esse carai passou aqui');
       history.push('/');
     }
-  }, [isAuthenticated, history, isAuthenticating, submitted]);
-
-  React.useEffect(() => {
-    return () => setSubmitted(false);
-  }, []);
+    return () => {
+      submitted.current = false;
+    };
+  }, [isAuthenticated, history]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -123,7 +121,7 @@ const SigIn: React.FC = () => {
         <Typography component="h1" variant="h5">
           Covid Vision
         </Typography>
-        <form className={classes.form} onSubmit={handleAuth}>
+        <form className={classes.form} onSubmit={onSubmit}>
           <TextField
             variant="outlined"
             margin="normal"

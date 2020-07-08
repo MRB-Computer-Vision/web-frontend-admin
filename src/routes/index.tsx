@@ -15,9 +15,9 @@ import SignIn from '../pages/SignIn';
 
 const Routes: React.FC = () => (
   <Switch>
+    <Route isProtected exact path="/" component={Dashboard} />
     <Route path="/site" component={Site} />
     <Route path="/signin" component={SignIn} />
-    <Route isProtected exact path="/" component={Dashboard} />
     <Route
       isProtected
       path="/clinical-evaluation"

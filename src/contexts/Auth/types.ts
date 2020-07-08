@@ -9,6 +9,7 @@ export interface SignInProps {
 }
 
 export interface AuthContextData {
+  token?: string;
   isAuthenticated: boolean;
   isAuthenticating: boolean;
   user: User;

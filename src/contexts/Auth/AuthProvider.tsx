@@ -5,8 +5,37 @@ import Context from './AuthContext';
 import { User, AuthContextData, SignInProps } from './types';
 import useFetchApi from '../../hooks/useFetchApi';
 
+const getUserFromStorage = (): User => {
+  let user: User = {};
+  try {
+    user = JSON.parse(window.localStorage.getItem('@irb:user') || '{}');
+  } catch (err) {
+    console.log(err);
+  }
+  return user;
+};
+
+const setUserToStorage = (user: User): void => {
+  window.localStorage.setItem('@irb:user', JSON.stringify(user));
+};
+
+const getTokenFromStorage = (): string => {
+  let token = '';
+  try {
+    token = window.localStorage.getItem('@irb:token') || '';
+  } catch (err) {
+    console.log(err);
+  }
+  return token;
+};
+
+const setTokenToStorage = (token: string): void => {
+  window.localStorage.setItem('@irb:token', token);
+};
+
 const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = React.useState<User>({});
+  const [user, setUser] = React.useState<User>(getUserFromStorage());
+  const [token, setToken] = React.useState<string>(getTokenFromStorage());
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
   const [isAuthenticating, setIsAuthenticating] = React.useState<boolean>(true);
 
@@ -17,23 +46,11 @@ const AuthProvider: React.FC = ({ children }) => {
   };
 
   const signOut = async (): Promise<void> => {
-    await localStorage.clear();
+    setUserToStorage({});
+    setTokenToStorage('');
     setUser({});
+    setToken('');
   };
-
-  const loadStorage = async (): Promise<void> => {
-    console.log('stored1');
-    const storagedUser = localStorage.getItem('@irb:user');
-    console.log('stored2', storagedUser);
-    if (storagedUser) {
-      console.log('stored3', JSON.parse(storagedUser));
-      setUser(JSON.parse(storagedUser));
-    }
-  };
-
-  React.useEffect(() => {
-    loadStorage();
-  }, []);
 
   React.useEffect(() => {
     setIsAuthenticating(isFetching);
@@ -44,9 +61,10 @@ const AuthProvider: React.FC = ({ children }) => {
       const { Authorization } = data;
       const decodedJwt = jsonWebTokenService.decode(Authorization);
       const userAuth = { id: decodedJwt?.sub, name: 'Sam' };
-      localStorage.setItem('@irb:user', JSON.stringify(userAuth));
-      localStorage.setItem('@irb:token', Authorization);
       setUser(userAuth);
+      setToken(Authorization);
+      setUserToStorage(userAuth);
+      setTokenToStorage(Authorization);
     }
   }, [data]);
 
@@ -59,6 +77,7 @@ const AuthProvider: React.FC = ({ children }) => {
   }, [user.id, setIsAuthenticated]);
 
   const value: AuthContextData = {
+    token,
     user,
     isAuthenticated,
     isAuthenticating,
