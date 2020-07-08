@@ -9,4 +9,4 @@ export const Form = styled.form`
 `;
 export const FileChooserButton = styled.button``;
 export const FileInput = styled.input``;
-export const UploadButton = styled.button``;
+// export const UploadButton = styled.button``;

@@ -99,11 +99,7 @@ const SigIn: React.FC = () => {
 
   const history = useHistory();
   React.useEffect(() => {
-    console.log('isAuthenticated', isAuthenticated);
-    console.log('isAuthenticating', isAuthenticating);
-    console.log('submitted', submitted.current);
     if (isAuthenticated) {
-      console.log('esse carai passou aqui');
       history.push('/');
     }
     return () => {

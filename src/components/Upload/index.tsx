@@ -1,5 +1,9 @@
 import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
+import UploadButton from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { Snackbar, SnackbarOrigin } from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { sign } from '../../util/AWSUtil';
 import Message from '../Message';
 import { useAuthContext } from '../../contexts/Auth';
@@ -10,13 +14,20 @@ import {
   Form,
   FileChooserButton,
   FileInput,
-  UploadButton,
   Result,
 } from './styles';
 
 interface UploadProps {
   medicalRecordNumber?: string;
   find?: () => void;
+}
+
+function Alert(props: AlertProps): any {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+export interface State extends SnackbarOrigin {
+  open: boolean;
 }
 
 // tipando componente no formato de funcao
@@ -29,12 +40,24 @@ const Upload: React.FC<UploadProps> = ({
   const [file, setFile] = useState();
   const [data, setData] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-
-  const [uploadMessage, setUploadMessage] = useState('');
+  // remover
   const [showMessage, setShowMessage] = useState(false);
   const [erroUpload, setErroUpload] = useState(false);
+  const [message, setMessage] = useState('');
+  const [severitySuccess, setSeveritySuccess] = useState(true);
+  // novo
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, open } = state;
 
   const { token } = useAuthContext();
+
+  const handleClose = (): void => {
+    setState({ ...state, open: false });
+  };
 
   const isValidFileType = (fileType: string): boolean => {
     return acceptedTypes.includes(fileType);
@@ -61,12 +84,11 @@ const Upload: React.FC<UploadProps> = ({
     event: FormEvent<HTMLFormElement>,
   ): Promise<void> {
     event.preventDefault();
-
     if (!isValidFileType(file.type)) {
-      setUploadMessage(`Formato não suportado`);
+      setMessage(`Formato não suportado`);
       return;
     }
-
+    setUploading(true);
     try {
       const signedUrl = await sign(file.name, file.type);
       const options = {
@@ -85,32 +107,37 @@ const Upload: React.FC<UploadProps> = ({
         };
         const result = await submitExame(dataSubmit);
         setData(result.data.exam);
-        setUploadMessage(result.data.message);
+        setMessage(result.data.message);
         setUploading(false);
         setFile(undefined);
+        setSeveritySuccess(true);
         if (find) {
           find();
         }
       } else {
         setData(null);
-        setUploadMessage(dataS3.statusText);
+        setMessage(dataS3.statusText);
+        setSeveritySuccess(false);
       }
       setErroUpload(false);
     } catch (err) {
+      setSeveritySuccess(false);
       setUploading(false);
       setErroUpload(true);
-      setUploadMessage(`${err}`);
+      setMessage(`${err}`);
+    } finally {
+      setUploading(false);
+      setShowMessage(true);
+      setState({ open: true, vertical: 'top', horizontal: 'center' });
     }
-    setUploading(false);
-    setShowMessage(true);
   }
 
   return (
     <>
       <UploadFile>
         <ImagePreviewBox />
-        <Message show={showMessage} message={uploadMessage} erro={erroUpload} />
         <Form onSubmit={handleFileUpload}>
+          {uploading && <LinearProgress />}
           <FileChooserButton type="button">
             Choose File
             <FileInput
@@ -124,12 +151,32 @@ const Upload: React.FC<UploadProps> = ({
               }}
             />
           </FileChooserButton>
-          <UploadButton type="submit" disabled={uploading}>
-            Send File
-          </UploadButton>
+          {!uploading && (
+            <UploadButton
+              type="submit"
+              disabled={uploading}
+              variant="contained"
+              color="primary"
+            >
+              Enviar Arquivo
+            </UploadButton>
+          )}
         </Form>
         {data ? <Result>{data}</Result> : <span />}
       </UploadFile>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical, horizontal }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={severitySuccess ? 'success' : 'error'}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

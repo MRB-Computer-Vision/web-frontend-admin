@@ -60,7 +60,7 @@ const AuthProvider: React.FC = ({ children }) => {
     if (data.Authorization) {
       const { Authorization } = data;
       const decodedJwt = jsonWebTokenService.decode(Authorization);
-      const userAuth = { id: decodedJwt?.sub, name: 'Sam' };
+      const userAuth = { id: decodedJwt?.sub, name: 'Dr. Profile' };
       setUser(userAuth);
       setToken(Authorization);
       setUserToStorage(userAuth);

@@ -20,6 +20,8 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
 
 import { useAuthContext } from '../../contexts/Auth';
 
@@ -36,6 +38,17 @@ const StyledTableCell = withStyles((theme: Theme) =>
     },
     body: {
       fontSize: 14,
+    },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
     },
   }),
 )(TableCell);
@@ -70,6 +83,17 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       bottom: theme.spacing(2),
       right: theme.spacing(2),
+    },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
     },
   }),
 );
@@ -110,6 +134,7 @@ const ClinicalEvaluation: React.FC = () => {
   const { token } = useAuthContext();
   const [showUpload, setShowUpload] = React.useState<boolean>(false);
   const [showExams, setShowExams] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState(false);
 
   const onChangeValue = (field: string) => ({ target }: any) => {
     setMedicalRecordNumber(target.value);
@@ -146,7 +171,11 @@ const ClinicalEvaluation: React.FC = () => {
   // exibir upload
   React.useEffect(() => {
     console.log('medical', medicalRecord);
-    if (response.data && (medicalRecord === undefined || !medicalRecord.id)) {
+    if (
+      !loading &&
+      response.data &&
+      (medicalRecord === undefined || !medicalRecord.id)
+    ) {
       setShowUpload(true);
     } else {
       setShowUpload(false);
@@ -166,6 +195,14 @@ const ClinicalEvaluation: React.FC = () => {
     find();
   };
 
+  const handleOpen = (): void => {
+    setOpen(true);
+  };
+
+  const handleClose = (): void => {
+    setOpen(false);
+  };
+
   return (
     <View titlePage="Avaliação Clínica">
       <div className={classes.content}>
@@ -175,6 +212,7 @@ const ClinicalEvaluation: React.FC = () => {
             <Grid container spacing={3}>
               <Grid item xs={3}>
                 <TextField
+                  size="medium"
                   variant="outlined"
                   margin="normal"
                   required
@@ -182,6 +220,7 @@ const ClinicalEvaluation: React.FC = () => {
                   label="Prontuário"
                   name="medicalRecordNumber"
                   autoComplete="medicalRecordNumber"
+                  placeholder="Informe o número"
                   autoFocus
                   value={medicalRecordNumber}
                   onChange={onChangeValue('medicalRecordNumber')}
@@ -189,10 +228,13 @@ const ClinicalEvaluation: React.FC = () => {
               </Grid>
               <Grid item xs={3}>
                 <br />
+                <br />
                 {!loading && (
-                  <Button type="submit" variant="contained" color="primary">
-                    Pesquisar
-                  </Button>
+                  <>
+                    <Button type="submit" variant="contained" color="primary">
+                      Pesquisar
+                    </Button>
+                  </>
                 )}
                 {loading && <CircularProgress />}
               </Grid>
@@ -265,7 +307,10 @@ const ClinicalEvaluation: React.FC = () => {
         )}
         {showUpload && (
           <>
-            <Upload medicalRecordNumber={medicalRecordNumber} find={find} />
+            <div>
+              <br />
+              <Upload medicalRecordNumber={medicalRecordNumber} find={find} />
+            </div>
           </>
         )}
       </div>
