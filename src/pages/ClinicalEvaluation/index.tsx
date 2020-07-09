@@ -142,7 +142,6 @@ const ClinicalEvaluation: React.FC = () => {
 
   async function find(): Promise<void> {
     try {
-      // setShowUpload(false);
       setLoading(true);
       const responsea = await getMedicalRecords(token || '');
       setResponse(responsea);
